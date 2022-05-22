@@ -19,7 +19,7 @@ def defind_urls(localtime):
     keys.append('96')
     keys.append('136')
     # print(keys)
-    localtime = localtime[:-2] + str(int(localtime[-2:]) - 1)
+    # localtime = localtime[:-2] + str(int(localtime[-2:]) - 1)
     urls = [f"https://airtw.epa.gov.tw/json/airlist/airlist_{str(i)}_{localtime}.json"
             for i in keys]
     return urls
