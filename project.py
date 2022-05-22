@@ -19,7 +19,11 @@ def defind_urls(localtime):
     keys.append('96')
     keys.append('136')
     # print(keys)
-    # localtime = localtime[:-2] + str(int(localtime[-2:]) - 1)
+    if(localtime[-1] != '0'):
+        localtime = localtime[:-1] + str(int(localtime[-1]) - 1)
+    else:
+        localtime = localtime[:-2] + str(int(localtime[-2]) - 1) + '9'
+    print(localtime)
     urls = [f"https://airtw.epa.gov.tw/json/airlist/airlist_{str(i)}_{localtime}.json"
             for i in keys]
     return urls
@@ -65,21 +69,27 @@ def IN_database(all_data):
     conn.commit()
 
 check = False
+check_now = False
 while True:
     accept = input("是否要取得最新資訊?(Y為是，N為手動輸入)：")
     if accept == 'Y':
-        localtime = time.strftime('%Y%m%d%H', time.localtime())
+        localtime = time.strftime('%m%d%H', time.localtime())
+        check_now = True
         break
     elif accept == 'N':
         check = True
         break
     else:
         print("輸入錯誤請重新輸入")
+localtime_true = time.strftime('%Y%m%d%H', time.localtime())
+print("當前時間：" + localtime_true[4:])
 while True:
     if check:
-        localtime = input("輸入年月日時(ex:2021110414)：")
-    if localtime.isdigit() and len(localtime) == 10:
+        localtime = input("輸入月日時(最早只能到四天前)(ex:111203)：")
+        # print(localtime[6: 8])
+    if localtime.isdigit() and len(localtime) == 6:
         print("OK")
+        localtime = localtime_true[: 4] + localtime
         urls = defind_urls(localtime)
         all_data = catchdata(urls)
         IN_database(all_data)
